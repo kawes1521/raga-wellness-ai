@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@/contexts/UserContext";
 import { RAGA_CLUSTERS } from "@/utils/ragaRecommendation";
+import RagaPlayer from "@/components/Audio/RagaPlayer";
 
 interface RagaRecommendationProps {
   recommendation: {
@@ -14,6 +15,7 @@ interface RagaRecommendationProps {
     raga: string;
     confidence: number;
     allProbabilities: number[];
+    explanation?: string;
   };
   assessmentData: {
     stressLevel: number;
@@ -59,6 +61,15 @@ const RagaRecommendation = ({ recommendation, assessmentData, onReset }: RagaRec
       <CardContent>
         <div className="space-y-6">
           <p>{recommendation.clusterDescription}</p>
+          
+          {recommendation.explanation && (
+            <div className="bg-primary/5 border border-primary/10 rounded-md p-4 text-sm">
+              <h4 className="font-medium mb-2">Why this raga was recommended:</h4>
+              <p>{recommendation.explanation}</p>
+            </div>
+          )}
+          
+          <RagaPlayer title={recommendation.raga} />
           
           <div className="space-y-3 bg-secondary/50 rounded-lg p-4">
             <h4 className="font-medium">Based on your assessment</h4>

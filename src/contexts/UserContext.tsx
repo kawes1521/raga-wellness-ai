@@ -13,6 +13,8 @@ export type User = {
     gender: 'M' | 'F';
     ragaCluster: number;
     ragaName: string;
+    confidence?: number;
+    allProbabilities?: number[];
     feedback?: 'positive' | 'neutral' | 'negative';
   }[];
 };
@@ -26,7 +28,7 @@ type UserContextType = {
   saveAssessment: (assessment: { stressLevel: number; energyLevel: number; gender: 'M' | 'F' }) => void;
   saveFeedback: (feedback: 'positive' | 'neutral' | 'negative') => void;
   lastAssessment: { stressLevel: number; energyLevel: number; gender: 'M' | 'F' } | null;
-  lastRecommendation: { cluster: number; ragaName: string } | null;
+  lastRecommendation: { cluster: number; ragaName: string; confidence?: number; allProbabilities?: number[] } | null;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -46,7 +48,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [lastAssessment, setLastAssessment] = useState<{ stressLevel: number; energyLevel: number; gender: 'M' | 'F' } | null>(null);
-  const [lastRecommendation, setLastRecommendation] = useState<{ cluster: number; ragaName: string } | null>(null);
+  const [lastRecommendation, setLastRecommendation] = useState<{ cluster: number; ragaName: string; confidence?: number; allProbabilities?: number[] } | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -168,6 +170,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       gender: lastAssessment.gender,
       ragaCluster: lastRecommendation.cluster,
       ragaName: lastRecommendation.ragaName,
+      confidence: lastRecommendation.confidence,
+      allProbabilities: lastRecommendation.allProbabilities,
       feedback
     }];
     

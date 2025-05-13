@@ -1,6 +1,5 @@
-
 // This is a simplified implementation of a contextual bandit algorithm
-// In a real app, this would be a more sophisticated machine learning model
+// with epsilon-greedy exploration strategy
 
 // Define raga clusters
 export const RAGA_CLUSTERS = [
@@ -77,8 +76,14 @@ const predictArmRewards = (features: { stressLevel: number; energyLevel: number;
   });
 };
 
-// Function to select the best arm
-const selectBestArm = (probabilities: number[]): number => {
+// Function to select arm using epsilon-greedy strategy
+const epsilonGreedySelection = (probabilities: number[], epsilon: number = 0.1): number => {
+  // With probability epsilon, explore randomly
+  if (Math.random() < epsilon) {
+    return Math.floor(Math.random() * probabilities.length);
+  }
+  
+  // Otherwise, exploit the best arm
   return probabilities.reduce((maxIndex, prob, currIndex, arr) => 
     prob > arr[maxIndex] ? currIndex : maxIndex, 0);
 };
@@ -87,6 +92,39 @@ const selectBestArm = (probabilities: number[]): number => {
 const selectRandomRaga = (cluster: number): string => {
   const ragas = RAGA_CLUSTERS[cluster].ragas;
   return ragas[Math.floor(Math.random() * ragas.length)];
+};
+
+// Get human-readable explanation for the recommendation
+const getExplanation = (
+  cluster: number, 
+  confidence: number, 
+  features: { stressLevel: number; energyLevel: number; gender: 'M' | 'F' }
+): string => {
+  const clusterInfo = RAGA_CLUSTERS[cluster];
+  let explanation = "";
+  
+  switch(cluster) {
+    case 0: // Tension Relief
+      explanation = features.stressLevel > 3 
+        ? `Based on your high stress level (${features.stressLevel}/5), this raga is designed to provide relief and calm.`
+        : `This raga can help provide balance and relaxation for your current state.`;
+      break;
+    case 1: // Energy & Focus
+      explanation = features.stressLevel < 3 
+        ? `Your moderate stress level (${features.stressLevel}/5) indicates you might benefit from increased focus and mental clarity.`
+        : `This raga can help channel your energy into productive focus.`;
+      break;
+    case 2: // Uplift & Energize
+      explanation = features.energyLevel < 40 
+        ? `Your energy level (${features.energyLevel}%) indicates you could benefit from an uplifting melody.`
+        : `This raga can help maintain and enhance your positive energy state.`;
+      break;
+    case 3: // Balanced Calming
+      explanation = `Based on your combined stress (${features.stressLevel}/5) and energy (${features.energyLevel}%) levels, this raga offers a harmonizing effect.`;
+      break;
+  }
+  
+  return explanation;
 };
 
 // Main function to recommend a raga
@@ -107,11 +145,18 @@ export const recommendRaga = (stressLevel: number, energyLevel: number, gender: 
   // Get predicted rewards for each arm
   const predictedRewards = predictArmRewards(features);
   
-  // Select best arm
-  const selectedCluster = selectBestArm(predictedRewards);
+  // Select cluster using epsilon-greedy strategy
+  const selectedCluster = epsilonGreedySelection(predictedRewards);
   
   // Select a random raga from the selected cluster
   const selectedRaga = selectRandomRaga(selectedCluster);
+  
+  // Get explanation for the recommendation
+  const explanation = getExplanation(
+    selectedCluster, 
+    predictedRewards[selectedCluster],
+    { stressLevel, energyLevel, gender }
+  );
   
   return {
     cluster: selectedCluster,
@@ -119,6 +164,7 @@ export const recommendRaga = (stressLevel: number, energyLevel: number, gender: 
     clusterDescription: RAGA_CLUSTERS[selectedCluster].description,
     raga: selectedRaga,
     confidence: predictedRewards[selectedCluster],
-    allProbabilities: predictedRewards
+    allProbabilities: predictedRewards,
+    explanation
   };
 };
