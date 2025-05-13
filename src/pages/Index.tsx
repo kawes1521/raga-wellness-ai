@@ -1,13 +1,43 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { UserProvider } from "@/contexts/UserContext";
+import Layout from "@/components/Layout/Layout";
+import AppIcon from "@/components/AppIcon";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <UserProvider>
+      <div className="min-h-screen flex flex-col">
+        <header className="border-b bg-background/95 backdrop-blur-sm sticky top-0 z-10">
+          <div className="container mx-auto p-4 flex items-center">
+            <div className="flex items-center gap-3">
+              <AppIcon />
+              <div>
+                <h1 className="font-bold text-lg">Raga Wellness</h1>
+                <p className="text-xs text-muted-foreground">Personalized raga therapy</p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main className="flex-grow">
+          <Layout />
+        </main>
+
+        <footer className="border-t py-6">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="flex items-center gap-2">
+                <AppIcon />
+                <span className="text-sm font-medium">Raga Wellness</span>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Wellness through the science of Indian classical ragas
+              </div>
+            </div>
+          </div>
+        </footer>
       </div>
-    </div>
+    </UserProvider>
   );
 };
 
