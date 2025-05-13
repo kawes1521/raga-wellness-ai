@@ -1,10 +1,10 @@
 
 import { UserProvider } from "@/contexts/UserContext";
-import Layout from "@/components/Layout/Layout";
+import AnalyticsLayout from "@/components/Analytics/AnalyticsLayout";
 import AppIcon from "@/components/AppIcon";
 import { Link } from "react-router-dom";
 
-const Index = () => {
+const Analytics = () => {
   return (
     <UserProvider>
       <div className="min-h-screen flex flex-col">
@@ -18,10 +18,10 @@ const Index = () => {
               </div>
             </div>
             <nav className="hidden md:flex gap-6">
-              <Link to="/" className="text-sm text-foreground font-medium">
+              <Link to="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Home
               </Link>
-              <Link to="/analytics" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link to="/analytics" className="text-sm text-foreground font-medium">
                 Analytics
               </Link>
             </nav>
@@ -29,7 +29,7 @@ const Index = () => {
         </header>
 
         <main className="flex-grow">
-          <Layout />
+          <AnalyticsLayout />
         </main>
 
         <footer className="border-t py-6">
@@ -50,4 +50,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Analytics;

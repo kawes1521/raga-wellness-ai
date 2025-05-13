@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useUser } from "@/contexts/UserContext";
 import AssessmentForm from "@/components/Assessment/AssessmentForm";
 import { User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const { user, logout } = useUser();
@@ -15,9 +16,16 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold">Welcome, {user?.name}</h1>
           <p className="text-muted-foreground">Your personalized raga wellness journey</p>
         </div>
-        <Button onClick={logout} variant="outline" size="sm" className="whitespace-nowrap">
-          Sign Out
-        </Button>
+        <div className="flex gap-3">
+          <Link to="/analytics">
+            <Button variant="outline" size="sm" className="whitespace-nowrap">
+              View Analytics
+            </Button>
+          </Link>
+          <Button onClick={logout} variant="outline" size="sm" className="whitespace-nowrap">
+            Sign Out
+          </Button>
+        </div>
       </header>
 
       <div className="grid gap-6 md:grid-cols-6">
